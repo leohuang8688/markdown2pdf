@@ -1,11 +1,6 @@
----
-name: markdown2pdf
-description: OpenClaw skill that converts markdown output to PDF files and PNG images. Supports multiple output formats with customizable styling.
----
+# 📄 Markdown2PDF
 
-# Markdown2PDF Skill
-
-**Convert markdown content to PDF files and PNG images for OpenClaw.**
+**An OpenClaw skill that converts markdown output to PDF files and PNG images with customizable themes.**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
@@ -14,12 +9,13 @@ description: OpenClaw skill that converts markdown output to PDF files and PNG i
 
 ## ✨ Features
 
-- 📄 **Markdown to PDF** - Convert markdown to professional PDF documents
+- 📄 **Markdown to PDF** - Convert markdown documents to professional PDF files
 - 🖼️ **Markdown to PNG** - Convert markdown to high-quality PNG images
-- 🎨 **Custom Styling** - Beautiful default styling with customization options
-- 📦 **Multiple Formats** - Convert to multiple formats simultaneously
-- 🔧 **Easy to Use** - Simple API and command-line interface
-- 🚀 **OpenClaw Integration** - Seamless integration with OpenClaw
+- 🎨 **Multiple Themes** - 5 built-in themes (default, dark, github, minimal, professional)
+- 🎯 **Customizable** - Custom CSS support for complete control
+- 🚀 **Fast & Easy** - Simple CLI interface
+- 🧩 **OpenClaw Integration** - Seamless integration with OpenClaw
+- 📱 **Responsive** - Output looks great on all devices
 
 ---
 
@@ -28,149 +24,142 @@ description: OpenClaw skill that converts markdown output to PDF files and PNG i
 ### Installation
 
 ```bash
-# Navigate to skills directory
-cd /root/.openclaw/workspace/skills
-
-# Clone the repository
+# Clone to OpenClaw skills directory
+cd ~/.openclaw/workspace/skills
 git clone https://github.com/leohuang8688/markdown2pdf.git
 cd markdown2pdf
 
 # Install dependencies
 pip install -r requirements.txt
+
+# Install wkhtmltopdf (required for PDF/PNG generation)
+# macOS
+brew install wkhtmltopdf
+
+# Ubuntu/Debian
+sudo apt-get install wkhtmltopdf
+
+# Windows
+# Download from https://wkhtmltopdf.org/downloads.html
 ```
 
 ### Basic Usage
 
-#### Python API
+```bash
+# Convert to PDF and PNG (default)
+python3 src/converter.py input.md
+
+# Convert to PDF only
+python3 src/converter.py input.md -f pdf
+
+# Convert to PNG only
+python3 src/converter.py input.md -f png
+
+# Use dark theme
+python3 src/converter.py input.md -t dark
+
+# Specify output filename
+python3 src/converter.py input.md -o my-document
+
+# Use github theme and output to specific directory
+python3 src/converter.py input.md -t github -o output -d ./docs
+```
+
+---
+
+## 🎨 Available Themes
+
+### `default`
+Clean, modern design with system fonts. Perfect for general use.
+
+### `dark`
+Dark theme with light text. Easy on the eyes, great for presentations.
+
+### `github`
+GitHub-style rendering. Familiar look for developers.
+
+### `minimal`
+Minimalist design with serif fonts. Elegant and professional.
+
+### `professional`
+Business-ready design. Perfect for reports and documentation.
+
+### List Themes
+
+```bash
+python3 src/converter.py --list-themes
+```
+
+---
+
+## 📖 API Usage
+
+### Python API
 
 ```python
-from converter import MarkdownConverter
+from src.converter import MarkdownConverter, convert_markdown, convert_markdown_to_pdf
 
-# Initialize converter
-converter = MarkdownConverter()
+# Basic conversion
+results = convert_markdown(
+    markdown_text="# Hello World",
+    output_filename="output",
+    formats=["pdf", "png"],
+    theme="github"
+)
 
-# Convert to PDF
-pdf_path = converter.convert_to_pdf("# Hello World\n\nThis is a test.")
+# PDF only
+pdf_path = convert_markdown_to_pdf(
+    markdown_text="# Document",
+    output_filename="doc.pdf",
+    theme="professional"
+)
 
-# Convert to PNG
-png_path = converter.convert_to_png("# Hello World\n\nThis is a test.")
+# Advanced usage with custom settings
+converter = MarkdownConverter(
+    output_dir=Path("./output"),
+    theme="dark",
+    custom_css=".custom { color: red; }"
+)
 
 # Convert to multiple formats
 results = converter.convert(
-    "# Hello World\n\nThis is a test.",
-    output_filename="output",
-    formats=['pdf', 'png']
+    markdown_text="# My Document",
+    output_filename="document",
+    formats=["pdf", "png"],
+    width=1920,  # PNG width
+    page_size="Letter",  # PDF page size
+    margin="15mm"  # PDF margin
 )
 ```
 
-#### Command Line
+### CLI Options
 
-```bash
-# Convert to PDF and PNG
-python3 src/converter.py input.md output.pdf pdf,png
-
-# Convert to PDF only
-python3 src/converter.py input.md output.pdf pdf
-
-# Convert to PNG only
-python3 src/converter.py input.md output.png png
 ```
+usage: converter.py [-h] [-o OUTPUT] [-f FORMATS] [-t THEME] [-d OUTPUT_DIR]
+                   [--width WIDTH] [--page-size PAGE_SIZE] [--margin MARGIN]
+                   [--list-themes]
+                   input
 
----
+Convert Markdown to PDF/PNG
 
-## 📖 API Reference
+positional arguments:
+  input                 Input markdown file
 
-### MarkdownConverter Class
-
-#### `__init__(output_dir: Optional[Path] = None)`
-
-Initialize the converter.
-
-**Args:**
-- `output_dir`: Output directory for generated files. Defaults to current directory.
-
-#### `markdown_to_html(markdown_text: str) -> str`
-
-Convert markdown to HTML.
-
-**Args:**
-- `markdown_text`: Markdown text to convert.
-
-**Returns:**
-- HTML string with styling.
-
-#### `convert_to_pdf(markdown_text: str, output_filename: Optional[str] = None, output_dir: Optional[Path] = None) -> Path`
-
-Convert markdown to PDF.
-
-**Args:**
-- `markdown_text`: Markdown text to convert.
-- `output_filename`: Output filename. Defaults to 'output.pdf'.
-- `output_dir`: Output directory. Defaults to instance output_dir.
-
-**Returns:**
-- Path to generated PDF file.
-
-#### `convert_to_png(markdown_text: str, output_filename: Optional[str] = None, output_dir: Optional[Path] = None, width: int = 1200) -> Path`
-
-Convert markdown to PNG.
-
-**Args:**
-- `markdown_text`: Markdown text to convert.
-- `output_filename`: Output filename. Defaults to 'output.png'.
-- `output_dir`: Output directory. Defaults to instance output_dir.
-- `width`: Image width in pixels. Defaults to 1200.
-
-**Returns:**
-- Path to generated PNG file.
-
-#### `convert(markdown_text: str, output_filename: Optional[str] = None, output_dir: Optional[Path] = None, formats: list = ['pdf', 'png']) -> dict`
-
-Convert markdown to multiple formats.
-
-**Args:**
-- `markdown_text`: Markdown text to convert.
-- `output_filename`: Base output filename (without extension).
-- `output_dir`: Output directory. Defaults to instance output_dir.
-- `formats`: List of formats to convert to. Defaults to ['pdf', 'png'].
-
-**Returns:**
-- Dictionary with paths to generated files.
-
----
-
-## 🎨 Custom Styling
-
-The converter includes beautiful default styling:
-
-- **Font**: System fonts (Apple System, BlinkMacSystemFont, Segoe UI, Roboto, etc.)
-- **Line Height**: 1.6 for readability
-- **Code Blocks**: Syntax highlighting with codehilite
-- **Tables**: Clean, bordered tables
-- **Blockquotes**: Styled with left border
-- **Links**: GitHub-style blue links
-
-### Custom CSS
-
-To customize styling, modify the `markdown_to_html` method in `converter.py`:
-
-```python
-html_template = f"""
-<!DOCTYPE html>
-<html>
-<head>
-    <style>
-        /* Your custom CSS here */
-        body {{
-            font-family: Your Font;
-        }}
-    </style>
-</head>
-<body>
-{html}
-</body>
-</html>
-"""
+optional arguments:
+  -h, --help            show this help message and exit
+  -o OUTPUT, --output OUTPUT
+                        Output filename (without extension)
+  -f FORMATS, --formats FORMATS
+                        Output formats (comma-separated: pdf,png)
+  -t THEME, --theme THEME
+                        Theme (default, dark, github, minimal, professional)
+  -d OUTPUT_DIR, --output-dir OUTPUT_DIR
+                        Output directory
+  --width WIDTH         PNG width in pixels
+  --page-size PAGE_SIZE
+                        PDF page size
+  --margin MARGIN       PDF margin
+  --list-themes         List available themes
 ```
 
 ---
@@ -180,152 +169,118 @@ html_template = f"""
 ```
 markdown2pdf/
 ├── src/
-│   └── converter.py          # Main converter module
+│   └── converter.py          # Main converter with theme support
 ├── tests/
 │   └── test_converter.py     # Test suite
-├── assets/                    # Assets directory
-├── pyproject.toml            # Python project config
+├── assets/                    # Theme assets and templates
+├── pyproject.toml            # Python project configuration
 ├── requirements.txt          # Python dependencies
-├── SKILL.md                  # OpenClaw skill definition
-└── README.md                 # This file
+├── README.md                 # This file
+└── SKILL.md                  # OpenClaw skill definition
 ```
 
 ---
 
 ## 🧪 Testing
 
-Run the test suite:
-
 ```bash
-cd /root/.openclaw/workspace/skills/markdown2pdf
+# Run tests
 pytest tests/
-```
 
-### Example Test
-
-```python
-import unittest
-from src.converter import MarkdownConverter
-
-class TestMarkdownConverter(unittest.TestCase):
-    def test_convert_to_pdf(self):
-        converter = MarkdownConverter()
-        pdf_path = converter.convert_to_pdf("# Test")
-        self.assertTrue(pdf_path.exists())
-    
-    def test_convert_to_png(self):
-        converter = MarkdownConverter()
-        png_path = converter.convert_to_png("# Test")
-        self.assertTrue(png_path.exists())
-
-if __name__ == '__main__':
-    unittest.main()
+# Test with sample markdown
+echo "# Test Document\n\nThis is a **test**." > test.md
+python3 src/converter.py test.md -t github
 ```
 
 ---
 
-## 🔧 OpenClaw Integration
+## 🎯 Use Cases
 
-### Skill Configuration
+### 1. **Documentation**
+Convert your markdown documentation to professional PDFs for distribution.
 
-In OpenClaw configuration file:
+### 2. **Presentations**
+Create beautiful PNG images from markdown for slides or social media.
+
+### 3. **Reports**
+Generate formatted reports from markdown notes.
+
+### 4. **Blog Posts**
+Preview how your blog posts will look before publishing.
+
+### 5. **README Files**
+Convert GitHub README files to PDF for offline reading.
+
+---
+
+## 🔧 Configuration
+
+### OpenClaw Integration
+
+In your OpenClaw configuration:
 
 ```json
 {
   "skills": {
     "markdown2pdf": {
       "enabled": true,
-      "output_dir": "/path/to/output"
+      "config": {
+        "default_theme": "github",
+        "default_formats": ["pdf"],
+        "output_dir": "./documents"
+      }
     }
   }
 }
 ```
 
-### Usage in OpenClaw
+### Environment Variables
 
-```python
-from skills.markdown2pdf.src.converter import MarkdownConverter
-
-# Initialize with OpenClaw workspace
-converter = MarkdownConverter()
-
-# Convert markdown output
-results = converter.convert(
-    markdown_text,
-    output_filename="output",
-    formats=['pdf', 'png']
-)
+```bash
+export MARKDOWN2PDF_THEME=github
+export MARKDOWN2PDF_OUTPUT_DIR=./output
+export MARKDOWN2PDF_FORMATS=pdf,png
 ```
 
 ---
 
-## 📝 Examples
+## 📊 Examples
 
 ### Example 1: Simple Conversion
 
+```bash
+# Convert README to PDF
+python3 src/converter.py README.md -f pdf -t github
+```
+
+### Example 2: Batch Conversion
+
+```bash
+# Convert all markdown files in directory
+for file in *.md; do
+    python3 src/converter.py "$file" -f pdf -t professional
+done
+```
+
+### Example 3: Custom Styling
+
 ```python
-from converter import convert_markdown
+from src.converter import MarkdownConverter
 
-markdown = """
-# Hello World
-
-This is a **test** document.
-
-## Features
-
-- Feature 1
-- Feature 2
-- Feature 3
+custom_css = """
+h1 { color: #2c3e50; border-bottom: 2px solid #3498db; }
+.codehilite { background: #f8f8f8; padding: 10px; }
 """
 
-results = convert_markdown(markdown, output_filename="hello")
-# Generates: hello.pdf and hello.png
-```
-
-### Example 2: Custom Output Directory
-
-```python
-from pathlib import Path
-from converter import MarkdownConverter
-
-converter = MarkdownConverter(output_dir=Path('/tmp/output'))
-pdf_path = converter.convert_to_pdf("# Hello World")
-# Generates: /tmp/output/output.pdf
-```
-
-### Example 3: Multiple Formats
-
-```python
-from converter import MarkdownConverter
-
-converter = MarkdownConverter()
-results = converter.convert(
-    "# Hello World",
-    output_filename="document",
-    formats=['pdf', 'png', 'html']
+converter = MarkdownConverter(
+    theme='minimal',
+    custom_css=custom_css
 )
-# Generates: document.pdf, document.png, document.html
-```
 
----
-
-## 🛠️ Dependencies
-
-- **markdown** - Markdown parsing
-- **pdfkit** - HTML to PDF conversion
-- **imgkit** - HTML to PNG conversion
-- **wkhtmltopdf** - PDF rendering engine
-
-### Install Dependencies
-
-```bash
-pip install markdown pdfkit imgkit wkhtmltopdf
-```
-
-Or install from requirements.txt:
-
-```bash
-pip install -r requirements.txt
+converter.convert_to_pdf(
+    markdown_text="# Custom Styled Document",
+    output_filename='custom.pdf'
+)
 ```
 
 ---
@@ -356,10 +311,18 @@ GitHub: [@leohuang8688](https://github.com/leohuang8688/markdown2pdf)
 
 ## 🙏 Acknowledgments
 
-- **markdown** - Python markdown parser
-- **pdfkit** - wkhtmltopdf Python wrapper
-- **imgkit** - wkhtmltopdf image Python wrapper
-- **wkhtmltopdf** - HTML to PDF/PNG rendering engine
+- [markdown](https://pypi.org/project/markdown/) - Markdown processing
+- [pdfkit](https://pypi.org/project/pdfkit/) - PDF generation
+- [imgkit](https://pypi.org/project/imgkit/) - Image generation
+- [wkhtmltopdf](https://wkhtmltopdf.org/) - HTML to PDF engine
+- OpenClaw Team - For the amazing framework
+
+---
+
+## 📞 Support
+
+- **Issues**: [GitHub Issues](https://github.com/leohuang8688/markdown2pdf/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/leohuang8688/markdown2pdf/discussions)
 
 ---
 
