@@ -16,6 +16,177 @@ from typing import Optional, Union, Dict, Any
 from datetime import datetime
 
 
+def replace_emoji_for_pdf(text: str, use_color: bool = True) -> str:
+    """Replace emoji with PDF-compatible text labels (optionally colored)."""
+    if use_color:
+        # Colored replacements using HTML span tags
+        replacements = {
+            '📊': '<span style="color:#1e88e5">[数据]</span>', 
+            '📈': '<span style="color:#43a047">[趋势↑]</span>', 
+            '📉': '<span style="color:#e53935">[趋势↓]</span>', 
+            '📋': '<span style="color:#8e24aa">[表]</span>',
+            '✅': '<span style="color:#43a047">[√]</span>', 
+            '❌': '<span style="color:#e53935">[×]</span>', 
+            '⚠️': '<span style="color:#fb8c00">[!] </span>', 
+            '🟡': '<span style="color:#fdd835">[●]</span>',
+            '🌍': '<span style="color:#1e88e5">[全球]</span>', 
+            '🕯️': '<span style="color:#8e24aa">[K 线]</span>', 
+            '📄': '<span style="color:#00897b">[文档]</span>', 
+            '🎨': '<span style="color:#e91e63">[主题]</span>',
+            '🚀': '<span style="color:#e53935">[启动]</span>', 
+            '🎯': '<span style="color:#e53935">[目标]</span>', 
+            '🔧': '<span style="color:#6d4c41">[工具]</span>', 
+            '💻': '<span style="color:#546e7a">[电脑]</span>',
+            '📁': '<span style="color:#fdd835">[文件]</span>', 
+            '📑': '<span style="color:#00897b">[页面]</span>', 
+            '📍': '<span style="color:#e53935">[位置]</span>', 
+            '📞': '<span style="color:#1e88e5">[联系]</span>',
+            '🎉': '<span style="color:#e91e63">[庆祝]</span>', 
+            '✨': '<span style="color:#ffb300">[亮点]</span>', 
+            '🧤': '<span style="color:#5c6bc0">[AI]</span>', 
+            '⭐': '<span style="color:#ffb300">★</span>',
+            '🔴': '<span style="color:#e53935">●</span>', 
+            '🟢': '<span style="color:#43a047">●</span>', 
+            '🔵': '<span style="color:#1e88e5">●</span>', 
+            '🟠': '<span style="color:#fb8c00">●</span>',
+            '⬆️': '<span style="color:#43a047">↑</span>', 
+            '⬇️': '<span style="color:#e53935">↓</span>', 
+            '➡️': '<span style="color:#1e88e5">→</span>', 
+            '⬅️': '<span style="color:#6d4c41">←</span>',
+            '💰': '<span style="color:#fdd835">[钱]</span>', 
+            '📰': '<span style="color:#e53935">[新闻]</span>', 
+            '🔄': '<span style="color:#1e88e5">[刷新]</span>', 
+            '📱': '<span style="color:#5c6bc0">[手机]</span>',
+            '💡': '<span style="color:#ffb300">[提示]</span>', 
+            '🔍': '<span style="color:#1e88e5">[搜索]</span>', 
+            '📌': '<span style="color:#e53935">[标记]</span>', 
+            '🏆': '<span style="color:#ffb300">[奖杯]</span>',
+            '🎓': '<span style="color:#5c6bc0">[学位]</span>', 
+            '📚': '<span style="color:#8e24aa">[书籍]</span>', 
+            '✏️': '<span style="color:#fb8c00">[笔]</span>', 
+            '📝': '<span style="color:#1e88e5">[笔记]</span>',
+            '🖼️': '<span style="color:#e91e63">[图片]</span>', 
+            '📅': '<span style="color:#e53935">[日历]</span>', 
+            '📆': '<span style="color:#1e88e5">[日程]</span>', 
+            '⏰': '<span style="color:#e53935">[闹钟]</span>',
+            '⌛': '<span style="color:#ffb300">[时间]</span>', 
+            '🔔': '<span style="color:#ffb300">[铃铛]</span>', 
+            '📢': '<span style="color:#e53935">[广播]</span>', 
+            '💬': '<span style="color:#1e88e5">[对话]</span>',
+            '👍': '<span style="color:#43a047">[赞]</span>', 
+            '👏': '<span style="color:#43a047">[鼓掌]</span>', 
+            '🙏': '<span style="color:#ffb300">[感谢]</span>', 
+            '🤝': '<span style="color:#1e88e5">[握手]</span>',
+            '💪': '<span style="color:#e53935">[加油]</span>', 
+            '🧠': '<span style="color:#e91e63">[大脑]</span>', 
+            '💼': '<span style="color:#546e7a">[公文包]</span>', 
+            '🏢': '<span style="color:#6d4c41">[大楼]</span>',
+            '🏦': '<span style="color:#fdd835">[银行]</span>', 
+            '🗺️': '<span style="color:#ffb300">[地图]</span>', 
+            '🌐': '<span style="color:#1e88e5">[网络]</span>', 
+            '🔗': '<span style="color:#5c6bc0">[链接]</span>',
+            '🔐': '<span style="color:#e53935">[锁定]</span>', 
+            '🔑': '<span style="color:#ffb300">[钥匙]</span>', 
+            '🛡️': '<span style="color:#546e7a">[盾牌]</span>', 
+            '⚙️': '<span style="color:#6d4c41">[齿轮]</span>',
+            'ℹ️': '<span style="color:#1e88e5">[信息]</span>', 
+            '❓': '<span style="color:#fb8c00">[？]</span>', 
+            '❗': '<span style="color:#e53935">[！]</span>', 
+            '⭕': '<span style="color:#43a047">○</span>',
+            '💎': '<span style="color:#1e88e5">◆</span>', 
+            '🔺': '<span style="color:#e53935">▲</span>', 
+            '🔻': '<span style="color:#e53935">▼</span>', 
+            '▶': '<span style="color:#43a047">►</span>', 
+            '◀': '<span style="color:#6d4c41">◄</span>',
+            '▲': '<span style="color:#43a047">▲</span>', 
+            '▼': '<span style="color:#e53935">▼</span>', 
+            '◆': '<span style="color:#1e88e5">◆</span>', 
+            '◇': '<span style="color:#6d4c41">◇</span>', 
+            '★': '<span style="color:#ffb300">★</span>', 
+            '☆': '<span style="color:#ffb300">☆</span>',
+            '☀': '<span style="color:#ffb300">☀</span>', 
+            '☁': '<span style="color:#546e7a">☁</span>', 
+            '☎': '<span style="color:#1e88e5">☎</span>', 
+            '☑': '<span style="color:#43a047">☑</span>', 
+            '☕': '<span style="color:#6d4c41">☕</span>',
+            '♀': '<span style="color:#e91e63">♀</span>', 
+            '♂': '<span style="color:#1e88e5">♂</span>', 
+            '♠': '<span style="color:#e53935">♠</span>', 
+            '♣': '<span style="color:#e53935">♣</span>', 
+            '♥': '<span style="color:#e53935">♥</span>', 
+            '♦': '<span style="color:#1e88e5">♦</span>',
+            '✓': '<span style="color:#43a047">✓</span>', 
+            '✔': '<span style="color:#43a047">✔</span>', 
+            '✕': '<span style="color:#e53935">✕</span>', 
+            '✖': '<span style="color:#e53935">✖</span>', 
+            '✗': '<span style="color:#e53935">✗</span>',
+            '❄': '<span style="color:#1e88e5">❄</span>', 
+            '❤': '<span style="color:#e53935">❤</span>',
+            '❶': '<span style="color:#e53935">1</span>', 
+            '❷': '<span style="color:#e53935">2</span>', 
+            '❸': '<span style="color:#e53935">3</span>', 
+            '❹': '<span style="color:#e53935">4</span>', 
+            '❺': '<span style="color:#e53935">5</span>',
+            '❻': '<span style="color:#1e88e5">6</span>', 
+            '❼': '<span style="color:#1e88e5">7</span>', 
+            '❽': '<span style="color:#1e88e5">8</span>', 
+            '❾': '<span style="color:#1e88e5">9</span>', 
+            '❿': '<span style="color:#1e88e5">10</span>',
+            '🅰': '<span style="color:#e53935">[A]</span>', 
+            '🅱': '<span style="color:#1e88e5">[B]</span>', 
+            '🅾': '<span style="color:#e53935">[O]</span>', 
+            '🅿': '<span style="color:#1e88e5">[P]</span>',
+            '🆎': '<span style="color:#e53935">[AB]</span>', 
+            '🆑': '<span style="color:#e53935">[CL]</span>', 
+            '🆒': '<span style="color:#1e88e5">[COOL]</span>', 
+            '🆓': '<span style="color:#43a047">[FREE]</span>',
+            '🆔': '<span style="color:#5c6bc0">[ID]</span>', 
+            '🆕': '<span style="color:#43a047">[NEW]</span>', 
+            '🆖': '<span style="color:#e53935">[NG]</span>', 
+            '🆗': '<span style="color:#43a047">[OK]</span>',
+            '🆘': '<span style="color:#e53935">[SOS]</span>', 
+            '🆙': '<span style="color:#fb8c00">[UP]</span>', 
+            '🆚': '<span style="color:#e53935">[VS]</span>',
+        }
+    else:
+        # Plain text replacements (no color)
+        replacements = {
+            '📊': '[数据]', '📈': '[趋势↑]', '📉': '[趋势↓]', '📋': '[表]',
+            '✅': '[√]', '❌': '[×]', '⚠️': '[!] ', '🟡': '[●]',
+            '🌍': '[全球]', '🕯️': '[K 线]', '📄': '[文档]', '🎨': '[主题]',
+            '🚀': '[启动]', '🎯': '[目标]', '🔧': '[工具]', '💻': '[电脑]',
+            '📁': '[文件]', '📑': '[页面]', '📍': '[位置]', '📞': '[联系]',
+            '🎉': '[庆祝]', '✨': '[亮点]', '🧤': '[AI]', '⭐': '★',
+            '🔴': '●', '🟢': '●', '🔵': '●', '🟠': '●',
+            '⬆️': '↑', '⬇️': '↓', '➡️': '→', '⬅️': '←',
+            '💰': '[钱]', '📰': '[新闻]', '🔄': '[刷新]', '📱': '[手机]',
+            '💡': '[提示]', '🔍': '[搜索]', '📌': '[标记]', '🏆': '[奖杯]',
+            '🎓': '[学位]', '📚': '[书籍]', '✏️': '[笔]', '📝': '[笔记]',
+            '🖼️': '[图片]', '📅': '[日历]', '📆': '[日程]', '⏰': '[闹钟]',
+            '⌛': '[时间]', '🔔': '[铃铛]', '📢': '[广播]', '💬': '[对话]',
+            '👍': '[赞]', '👏': '[鼓掌]', '🙏': '[感谢]', '🤝': '[握手]',
+            '💪': '[加油]', '🧠': '[大脑]', '💼': '[公文包]', '🏢': '[大楼]',
+            '🏦': '[银行]', '🗺️': '[地图]', '🌐': '[网络]', '🔗': '[链接]',
+            '🔐': '[锁定]', '🔑': '[钥匙]', '🛡️': '[盾牌]', '⚙️': '[齿轮]',
+            'ℹ️': '[信息]', '❓': '[？]', '❗': '[！]', '⭕': '○',
+            '💎': '◆', '🔺': '▲', '🔻': '▼', '▶': '►', '◀': '◄',
+            '▲': '▲', '▼': '▼', '◆': '◆', '◇': '◇', '★': '★', '☆': '☆',
+            '☀': '☀', '☁': '☁', '☎': '☎', '☑': '☑', '☕': '☕',
+            '♀': '♀', '♂': '♂', '♠': '♠', '♣': '♣', '♥': '♥', '♦': '♦',
+            '✓': '✓', '✔': '✔', '✕': '✕', '✖': '✖', '✗': '✗',
+            '❄': '❄', '❤': '❤',
+            '❶': '1', '❷': '2', '❸': '3', '❹': '4', '❺': '5',
+            '❻': '6', '❼': '7', '❽': '8', '❾': '9', '❿': '10',
+            '🅰': '[A]', '🅱': '[B]', '🅾': '[O]', '🅿': '[P]',
+            '🆎': '[AB]', '🆑': '[CL]', '🆒': '[COOL]', '🆓': '[FREE]',
+            '🆔': '[ID]', '🆕': '[NEW]', '🆖': '[NG]', '🆗': '[OK]',
+            '🆘': '[SOS]', '🆙': '[UP]', '🆚': '[VS]',
+        }
+    for emoji, replacement in replacements.items():
+        text = text.replace(emoji, replacement)
+    return text
+
+
 class Theme:
     """Theme configuration for markdown conversion."""
     
@@ -217,6 +388,9 @@ class MarkdownConverter:
         Returns:
             HTML string.
         """
+        # Replace emoji with PDF-compatible colored text labels
+        markdown_text = replace_emoji_for_pdf(markdown_text, use_color=True)
+        
         # Convert markdown to HTML with extensions
         html = markdown.markdown(
             markdown_text,
@@ -292,9 +466,7 @@ class MarkdownConverter:
                 'encoding': 'UTF-8',
                 'no-outline': None,
                 'print-media-type': None
-            },
-            verbose=False,
-            quiet=True
+            }
         )
         
         return output_path
@@ -337,8 +509,7 @@ class MarkdownConverter:
             options={
                 'width': width,
                 'format': 'png',
-                'quality': quality,
-                'quiet': True
+                'quality': quality
             }
         )
         
