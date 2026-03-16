@@ -1,0 +1,30 @@
+{
+  "name": "markdown2pdf",
+  "version": "1.0.0",
+  "description": "An OpenClaw skill that converts markdown output to PDF files and PNG images",
+  "main": "src/converter.py",
+  "type": "module",
+  "scripts": {
+    "test": "pytest tests/",
+    "convert": "python3 src/converter.py"
+  },
+  "dependencies": {
+    "markdown": "^3.5.0",
+    "pdfkit": "^1.0.0",
+    "imgkit": "^1.2.3",
+    "wkhtmltopdf": "^0.2.0"
+  },
+  "devDependencies": {
+    "pytest": "^7.4.0"
+  },
+  "keywords": [
+    "markdown",
+    "pdf",
+    "png",
+    "converter",
+    "openclaw",
+    "skill"
+  ],
+  "author": "PocketAI for Leo",
+  "license": "MIT"
+}
