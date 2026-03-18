@@ -15,6 +15,13 @@ from pathlib import Path
 from typing import Optional, Union, Dict, Any
 from datetime import datetime
 
+# Try to import WeasyPrint for better emoji support
+try:
+    from weasyprint import HTML, CSS
+    WEASYPRINT_AVAILABLE = True
+except ImportError:
+    WEASYPRINT_AVAILABLE = False
+
 
 def replace_emoji_for_pdf(text: str, use_color: bool = True) -> str:
     """Replace emoji with PDF-compatible text labels (optionally colored)."""
@@ -192,7 +199,7 @@ class Theme:
     
     THEMES = {
         'default': {
-            'font_family': '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif',
+            'font_family': '"Noto Color Emoji", "Apple Color Emoji", "Segoe UI Emoji", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif',
             'max_width': '800px',
             'line_height': '1.6',
             'text_color': '#333',
@@ -206,7 +213,7 @@ class Theme:
             'background': '#ffffff'
         },
         'dark': {
-            'font_family': '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif',
+            'font_family': '"Noto Color Emoji", "Apple Color Emoji", "Segoe UI Emoji", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif',
             'max_width': '800px',
             'line_height': '1.6',
             'text_color': '#e0e0e0',
@@ -220,7 +227,7 @@ class Theme:
             'background': '#1a1a1a'
         },
         'github': {
-            'font_family': '-apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif',
+            'font_family': '"Noto Color Emoji", "Apple Color Emoji", "Segoe UI Emoji", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif',
             'max_width': '980px',
             'line_height': '1.5',
             'text_color': '#24292e',
@@ -234,7 +241,7 @@ class Theme:
             'background': '#ffffff'
         },
         'minimal': {
-            'font_family': 'Georgia, serif',
+            'font_family': '"Noto Color Emoji", "Apple Color Emoji", "Segoe UI Emoji", Georgia, serif',
             'max_width': '700px',
             'line_height': '1.8',
             'text_color': '#2c3e50',
@@ -248,7 +255,7 @@ class Theme:
             'background': '#ffffff'
         },
         'professional': {
-            'font_family': '"Helvetica Neue", Arial, sans-serif',
+            'font_family': '"Noto Color Emoji", "Apple Color Emoji", "Segoe UI Emoji", "Helvetica Neue", Arial, sans-serif',
             'max_width': '850px',
             'line_height': '1.6',
             'text_color': '#333333',
@@ -370,6 +377,15 @@ class MarkdownConverter:
             border-top: 1px solid {theme['border_color']};
             margin: 30px 0;
         }}
+        /* Emoji support */
+        .emoji {{
+            font-family: "Noto Color Emoji", "Apple Color Emoji", "Segoe UI Emoji", sans-serif;
+            font-style: normal;
+        }}
+        /* Ensure emoji are rendered as color */
+        span.emoji {{
+            display: inline-block;
+        }}
         """
         
         if self.custom_css:
@@ -388,8 +404,8 @@ class MarkdownConverter:
         Returns:
             HTML string.
         """
-        # Replace emoji with PDF-compatible colored text labels
-        markdown_text = replace_emoji_for_pdf(markdown_text, use_color=True)
+        # Note: WeasyPrint now supports native emoji, no replacement needed!
+        # Emoji will be rendered in color using Noto Color Emoji font
         
         # Convert markdown to HTML with extensions
         html = markdown.markdown(
@@ -453,21 +469,58 @@ class MarkdownConverter:
         # Convert markdown to HTML
         html = self.markdown_to_html(markdown_text, title)
         
-        # Convert HTML to PDF
-        pdfkit.from_string(
-            html,
-            str(output_path),
-            options={
-                'page-size': page_size,
-                'margin-top': margin,
-                'margin-right': margin,
-                'margin-bottom': margin,
-                'margin-left': margin,
-                'encoding': 'UTF-8',
-                'no-outline': None,
-                'print-media-type': None
-            }
-        )
+        # Convert HTML to PDF using WeasyPrint (preferred for emoji support)
+        if WEASYPRINT_AVAILABLE:
+            try:
+                # Use WeasyPrint for better emoji and CSS3 support
+                html_doc = HTML(string=html)
+                css = CSS(string=f'''
+                    @page {{
+                        size: {page_size};
+                        margin: {margin};
+                    }}
+                ''')
+                html_doc.write_pdf(str(output_path), stylesheets=[css])
+                return output_path
+            except Exception as e:
+                print(f"⚠️ WeasyPrint failed: {e}, falling back to pdfkit")
+                # Fallback to pdfkit if WeasyPrint fails
+                pass
+        
+        # Fallback to pdfkit
+        try:
+            config = pdfkit.configuration(wkhtmltopdf='/usr/local/bin/wkhtmltopdf')
+            pdfkit.from_string(
+                html,
+                str(output_path),
+                options={
+                    'page-size': page_size,
+                    'margin-top': margin,
+                    'margin-right': margin,
+                    'margin-bottom': margin,
+                    'margin-left': margin,
+                    'encoding': 'UTF-8',
+                    'no-outline': None,
+                    'print-media-type': None
+                },
+                configuration=config
+            )
+        except Exception as e:
+            # Fallback without configuration
+            pdfkit.from_string(
+                html,
+                str(output_path),
+                options={
+                    'page-size': page_size,
+                    'margin-top': margin,
+                    'margin-right': margin,
+                    'margin-bottom': margin,
+                    'margin-left': margin,
+                    'encoding': 'UTF-8',
+                    'no-outline': None,
+                    'print-media-type': None
+                }
+            )
         
         return output_path
     
