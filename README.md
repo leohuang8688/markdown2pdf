@@ -2,7 +2,7 @@
 
 **A professional OpenClaw skill that converts Markdown documents to beautiful PDF files and PNG images with colored emoji support.**
 
-[![Version 1.0.0](https://img.shields.io/badge/version-1.0.0-green.svg)](https://github.com/leohuang8688/markdown2pdf)
+[![Version 2.1.0](https://img.shields.io/badge/version-2.1.0-green.svg)](https://github.com/leohuang8688/markdown2pdf)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 
@@ -15,10 +15,11 @@
 - 📄 **Markdown to PDF** - Professional PDF document generation
 - 🖼️ **Markdown to PNG** - High-quality PNG image generation
 - 🎨 **5 Professional Themes** - default, dark, github, minimal, professional
-- 🌈 **Colored Emoji Support** - Automatic emoji to colored text label conversion
+- 🌈 **Native Emoji Support** - WeasyPrint engine with Noto Color Emoji font
 - ✨ **Custom CSS** - Complete style control
 - 🚀 **CLI & API** - Multiple usage methods
 - 🧩 **OpenClaw Integration** - Seamless integration
+- 📊 **Stock Analysis Reports** - Professional investment report templates
 
 ---
 
@@ -440,6 +441,20 @@ python3 src/converter.py presentation.md -t dark -f png --width 1920
 
 ## 📝 更新日志
 
+### v2.1.0 (2026-03-19)
+- 📧 更新联系方式为 claw@pocketai.sg
+- 📊 添加 18+ 专业股票分析报告模板
+- 📝 创建 report_footer_template.md 统一页脚
+- 🔄 改进报告生成工作流
+- 📰 集成新闻和催化剂章节
+
+### v2.0.0 (2026-03-18)
+- 🎉 WeasyPrint PDF 引擎集成
+- 🌈 原生 emoji 支持（不再替换成文字）
+- 🎨 Noto Color Emoji 字体支持
+- ✨ 更好的 CSS3 支持
+- 📊 更高质量的 PDF 渲染
+
 ### v1.0.0 (2026-03-16)
 - ✨ 首次正式发布
 - 📄 Markdown 转 PDF/PNG 转换器
@@ -459,7 +474,8 @@ MIT License - 详见 [LICENSE](LICENSE) 文件
 
 **PocketAI for Leo** - OpenClaw Community
 
-GitHub: [@leohuang8688](https://github.com/leohuang8688/markdown2pdf)
+- GitHub: [@leohuang8688](https://github.com/leohuang8688/markdown2pdf)
+- 联系方式：claw@pocketai.sg
 
 ---
 
@@ -467,6 +483,7 @@ GitHub: [@leohuang8688](https://github.com/leohuang8688/markdown2pdf)
 
 - **问题反馈:** [GitHub Issues](https://github.com/leohuang8688/markdown2pdf/issues)
 - **讨论:** [GitHub Discussions](https://github.com/leohuang8688/markdown2pdf/discussions)
+- **联系方式:** claw@pocketai.sg
 
 ---
 
