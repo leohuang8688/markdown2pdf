@@ -21,6 +21,18 @@
 - 🧩 **OpenClaw Integration** - Seamless integration
 - 📊 **Stock Analysis Reports** - Professional investment report templates
 
+### 🎨 PDF Engine
+
+**Primary Engine: WeasyPrint**
+- Modern, stable PDF rendering
+- Native emoji support (no text replacement)
+- Better CSS3 support
+- Higher quality output
+
+**Fallback Engine: pdfkit**
+- Compatible with wkhtmltopdf
+- Emoji text replacement (if WeasyPrint unavailable)
+
 ---
 
 ## 🚀 Quick Start
@@ -31,9 +43,12 @@
 cd ~/.openclaw/workspace/skills/markdown2pdf
 
 # Install Python dependencies
-pip3 install markdown pdfkit imgkit
+pip3 install markdown weasyprint
 
-# Install wkhtmltopdf (required)
+# Optional: Install pdfkit for fallback
+pip3 install pdfkit imgkit
+
+# Install wkhtmltopdf (only needed for pdfkit fallback)
 # macOS
 brew install wkhtmltopdf
 
@@ -340,10 +355,20 @@ GitHub: [@leohuang8688](https://github.com/leohuang8688/markdown2pdf)
 ```bash
 cd ~/.openclaw/workspace/skills/markdown2pdf
 
-# 安装 Python 依赖
-pip3 install markdown pdfkit imgkit
+# 安装 Python 依赖（WeasyPrint 引擎）
+pip3 install markdown weasyprint
 
-# 安装 wkhtmltopdf（必需）
+# 可选：安装 pdfkit 作为备用引擎
+pip3 install pdfkit imgkit
+
+# 安装 Noto Color Emoji 字体（彩色 emoji 支持）
+# Ubuntu/Debian
+sudo apt-get install fonts-noto-color-emoji
+
+# macOS（系统自带 Apple Color Emoji）
+# 无需额外安装
+
+# 安装 wkhtmltopdf（仅用于 pdfkit 备用引擎）
 # macOS
 brew install wkhtmltopdf
 

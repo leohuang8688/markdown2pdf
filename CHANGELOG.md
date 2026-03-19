@@ -36,6 +36,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Created unified report footer template
 - Improved report generation workflow
 - Enhanced news and catalysts integration
+- Added WeasyPrint installation guide (docs/WEASYPRINT_INSTALL.md)
 
 ---
 
