@@ -371,7 +371,7 @@
 **报告生成时间：** 2026 年 3 月 16 日 17:50  
 **数据来源：** Tavily Search、Investing.com、Yahoo Finance  
 **分析师：** PocketAI 🧤  
-**联系方式：** leohuang8688@gmail.com
+**联系方式：** claw@pocketai.sg
 
 ---
 
